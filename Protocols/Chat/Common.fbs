@@ -1,0 +1,79 @@
+include "../Contact.fbs";
+include "../Image.fbs";
+
+namespace Lemon.Chat;
+
+table TextMessageChunk
+{
+    content: string;
+}
+
+table EmotionMessageChunk
+{
+    emotion_group_id: uint;
+    emotion_id: uint;
+}
+
+table ImageMessageChunk
+{
+    image: Image.Image;
+}
+
+union MessageChunk
+{
+    Text: TextMessageChunk,
+    Emotion: EmotionMessageChunk,
+}
+
+enum MessageFlag
+{
+    SentFail,
+    SentUnread,
+    SentRead,
+    SentReadDetail,
+    SentRevoked,
+
+    ReceivedFail,
+    ReceivedUnread,
+    ReceivedRead,
+    ReceivedReadDetail,
+    ReceivedRevoked,
+}
+
+table Message
+{
+    local_id: uint;
+    server_id: uint;
+    flag: MessageFlag;
+    timestamp: uint;
+    sender: Contact;
+    receiver: Contact;
+    content: [MessageChunk];
+}
+
+table MessageUpdatePush
+{
+    server_id: uint;
+    new_flag: MessageFlag;
+}
+
+table SendMsgReq
+{
+    token: Auth.AuthToken;
+    receiver: Contact;
+    message: Message;
+}
+
+enum SendMsgStatus
+{
+    Success,
+
+    FailUnknown,
+    FailInvalidToken,
+    FailInvalidReceiver,
+}
+
+table SendMsgResp
+{
+    status: SendMsgStatus;
+}

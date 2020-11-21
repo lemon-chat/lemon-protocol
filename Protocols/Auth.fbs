@@ -1,0 +1,58 @@
+include "./Common.fbs";
+
+namespace Lemon.Auth;
+
+struct SaltedPasswordMd5
+{
+    content: Md5Content;
+}
+
+struct AuthToken
+{
+    content: uint;
+}
+
+union LoginCredential
+{
+    Password: SaltedPasswordMd5,
+    Token: AuthToken,
+}
+
+table LoginReq
+{
+    username: string;
+    credential: LoginCredential;
+}
+
+enum LoginStatus : ushort
+{
+    Success,
+
+    FailUnknown,
+    FailWrongPassword,
+    FailInvalidToken,
+}
+
+table LoginResp
+{
+    status: LoginStatus;
+    token: AuthToken;
+}
+
+table HeartBeatReq
+{
+}
+
+table HeartBeatResp
+{
+}
+
+enum AccountStatus : ubyte
+{
+    Kick,
+}
+
+table AccountStatusPush
+{
+    status: AccountStatus;
+}

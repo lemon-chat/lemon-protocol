@@ -1,0 +1,82 @@
+include "./Auth.fbs";
+
+namespace Lemon.Image;
+
+table CdnImage
+{
+    cdn_id: string;
+}
+
+table NetworkImage
+{
+    url: string;
+}
+
+union Image
+{
+    cdn_image: CdnImage,
+    network_image: NetworkImage,
+}
+
+table CdnImageFetchReq
+{
+    token: Auth.AuthToken;
+    image: CdnImage;
+}
+
+enum CdnImageFetchStatus : ubyte
+{
+    Success,
+
+    FailUnknown,
+    FailInvalidToken,
+    FailNoSuchImage,
+}
+
+table CdnImageFetchResp
+{
+    status: CdnImageFetchStatus;
+    content: [ubyte];
+}
+
+table CdnImageUploadCheckReq
+{
+    token: Auth.AuthToken;
+    content_md5: Md5Content;
+}
+
+enum CdnImageUploadCheckStatus : ubyte
+{
+    Success,
+    SuccessUncached,
+    SuccessCached,
+
+    FailUnknown,
+    FailInvalidToken,
+}
+
+table CdnImageUploadCheckResp
+{
+    status: CdnImageUploadCheckStatus;
+    image: CdnImage;
+}
+
+table CdnImageUploadReq
+{
+    token: Auth.AuthToken;
+    content: [ubyte];
+}
+
+enum CdnImageUploadStatus : ubyte
+{
+    Success,
+
+    FailUnknown,
+    FailInvalidToken,
+}
+
+table CdnImageUploadResp
+{
+    status: CdnImageUploadStatus;
+    image: CdnImage;
+}

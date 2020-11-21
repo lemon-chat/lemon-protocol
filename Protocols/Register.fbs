@@ -1,0 +1,23 @@
+include "./Auth.fbs";
+
+namespace Lemon.Register;
+
+table RegisterReq
+{
+    username: string;
+    password: Auth.SaltedPasswordMd5;
+}
+
+enum RegisterStatus : ushort
+{
+    Success,
+
+    FailUnknown,
+    FailUserNameConflicted,
+}
+
+table RegisterResp
+{
+    status: RegisterStatus;
+    token: Auth.AuthToken;
+}
