@@ -2,12 +2,12 @@ include "./Common.fbs";
 
 namespace Lemon.Auth;
 
-struct SaltedPasswordMd5
+table SaltedPasswordMd5
 {
     content: Md5Content;
 }
 
-struct AuthToken
+table AuthToken
 {
     content: uint;
 }

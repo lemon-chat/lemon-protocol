@@ -1,0 +1,1 @@
+flatc --python Protocols/*.fbs
