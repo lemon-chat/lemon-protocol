@@ -19,13 +19,19 @@ table ImageMessageChunk
     image: Image.Image;
 }
 
-union MessageChunk
-{
+enum MessageChunkType: byte { Text, Emotion }
+
+union MessageChunkData {
     Text: TextMessageChunk,
-    Emotion: EmotionMessageChunk,
+    Emotion: EmotionMessageChunk
 }
 
-enum MessageFlag
+table MessageChunk {
+    type: MessageChunkType;
+    data: MessageChunkData;
+}
+
+enum MessageFlag: short
 {
     SentFail,
     SentUnread,
@@ -64,7 +70,7 @@ table SendMsgReq
     message: Message;
 }
 
-enum SendMsgStatus
+enum SendMsgStatus: short
 {
     Success,
 

@@ -1,1 +1,1 @@
-flatc --python Protocols/*.fbs
+flatc --python -o outputs/python -I Protocols Protocols/*.fbs
