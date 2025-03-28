@@ -1,4 +1,0 @@
-struct Md5Content
-{
-    content: [ubyte:16];
-}

@@ -1,0 +1,44 @@
+namespace Lemon.Common.Contact;
+
+// 场景枚举
+enum Scene : byte {
+    GROUP = 0,               // 群聊
+    FRIEND = 1,              // 好友
+    GUILD = 2,               // 频道
+    STRANGER_FROM_GROUP = 10,// 群临时会话
+    
+    // 以下类型为可选实现
+    NEARBY = 5,              // 附近的人
+    STRANGER = 9             // 陌生人
+}
+
+// 角色枚举
+enum Role : byte {
+    UNKNOWN = 0,             // 未知
+    MEMBER = 1,              // 普通成员
+    ADMIN = 2,               // 管理员
+    OWNER = 3                // 群主
+}
+
+// 联系人结构
+table Contact {
+    scene: Scene;                   // 场景类型
+    peer: string;                   // 联系人标识
+                                    // GROUP: 群号
+                                    // FRIEND|STRANGER_FROM_GROUP|NEARBY|STRANGER: 用户ID
+                                    // GUILD: 频道ID
+    sub_peer: string;    // 次级联系人标识
+                                    // GUILD: 子频道ID
+                                    // STRANGER_FROM_GROUP: 来源群号
+}
+
+// 发送者信息结构
+table Sender {
+    uid: string;                    // 用户ID
+    nick: string;        // 昵称
+    role: Role;          // 角色身份
+}
+
+// 根类型声明
+root_type Contact;
+root_type Sender;

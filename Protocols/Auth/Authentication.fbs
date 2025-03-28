@@ -1,0 +1,117 @@
+include "./Common.fbs";
+
+namespace Lemon.Auth;
+
+// 认证协议的票据类型
+table SuperTicket {
+    content: string;  // 超级票据，用于特权操作(如管理ticket)
+}
+
+table AuthTicket {
+    content: string;  // 普通认证票据
+}
+
+// 组合式凭证系统，同时支持密码和票据认证
+union LoginCredential {
+    Password: SaltedPasswordMd5,  // 传统密码认证
+    Token: AuthToken,             // 传统令牌认证
+    Ticket: AuthTicket,           // 票据认证
+    SuperTicket: SuperTicket,      // 用于票据管理操作
+}
+
+// 支持多种认证方式的登录请求
+table LoginReq {
+    username: string;             // 用户名
+    credential: LoginCredential;  // 认证凭证
+    account: string (optional);   // 账户标识(票据认证时必须)
+}
+
+// 增强版登录状态码
+enum LoginStatus : ushort {
+    Success,                   // 认证成功
+    SuccessNewTicket,          // 认证成功且生成新票据
+    
+    FailUnknown,               // 未知错误
+    FailWrongPassword,         // 密码错误
+    FailInvalidToken,          // 令牌无效
+    FailInvalidTicket,         // 票据无效
+    FailAccountNotFound,       // 账户不存在
+    FailLogicError,            // 逻辑错误
+    FailAuthRequired,          // 需要认证
+}
+
+// 登录响应
+table LoginResp {
+    status: LoginStatus;        // 登录状态
+    token: AuthToken (optional);       // 传统令牌(可选)
+    ticket: AuthTicket (optional);     // 新票据(票据认证时返回)
+    super_ticket: SuperTicket (optional); // 超级票据(用于后续票据管理)
+    msg: string (optional);            // 附加消息
+}
+
+// ========== 票据管理相关结构 ========== //
+
+// 获取票据列表请求
+table GetTicketsReq {
+    super_ticket: SuperTicket;  // 超级票据(必须有管理权限)
+    account: string;           // 目标账户
+}
+
+// 获取票据列表响应
+table GetTicketsResp {
+    tickets: [AuthTicket];     // 票据列表
+    status: LoginStatus;       // 操作状态
+    msg: string (optional);    // 附加消息
+}
+
+// 添加票据请求
+table AddTicketReq {
+    super_ticket: SuperTicket;  // 超级票据
+    account: string;           // 目标账户
+    new_ticket: AuthTicket;    // 要添加的新票据
+}
+
+// 删除票据请求
+table DeleteTicketReq {
+    super_ticket: SuperTicket;  // 超级票据
+    account: string;           // 目标账户
+    target_ticket: AuthTicket; // 要删除的目标票据
+}
+
+// 票据操作通用响应
+table TicketOperationResp {
+    status: LoginStatus;       // 操作状态
+    msg: string (optional);    // 附加消息
+}
+
+// ========== 心跳和状态推送 ========== //
+table HeartBeatReq {
+    // 心跳请求(保持连接活性)
+}
+
+table HeartBeatResp {
+    // 心跳响应
+}
+
+// 账户状态类型
+enum AccountStatus : ubyte {
+    Kick,           // 被踢下线
+    AuthExpired,    // 新增：认证已过期(票据失效)
+}
+
+// 账户状态推送
+table AccountStatusPush {
+    status: AccountStatus;  // 状态类型
+}
+
+// ========== 根类型声明 ========== //
+root_type LoginReq;
+root_type LoginResp;
+root_type GetTicketsReq;
+root_type GetTicketsResp;
+root_type AddTicketReq;
+root_type DeleteTicketReq;
+root_type TicketOperationResp;
+root_type HeartBeatReq;
+root_type HeartBeatResp;
+root_type AccountStatusPush;

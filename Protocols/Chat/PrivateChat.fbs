@@ -1,4 +1,4 @@
 include "../Auth.fbs";
-include "./Common.fbs";
+include "../Chat/Common.fbs";
 
 namespace Lemon.Chat.Private;

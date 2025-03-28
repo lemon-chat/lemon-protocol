@@ -52,8 +52,8 @@ table Message
     server_id: uint;
     flag: MessageFlag;
     timestamp: uint;
-    sender: Contact;
-    receiver: Contact;
+    sender: Contact.Contact;
+    receiver: Contact.Contact;
     content: [MessageChunk];
 }
 
@@ -66,7 +66,7 @@ table MessageUpdatePush
 table SendMsgReq
 {
     token: Auth.AuthToken;
-    receiver: Contact;
+    receiver: Contact.Contact;
     message: Message;
 }
 

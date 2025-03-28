@@ -2,6 +2,11 @@ include "./Auth.fbs";
 
 namespace Lemon.Image;
 
+struct Md5Content
+{
+    content: [ubyte:16];
+}
+
 table CdnImage
 {
     cdn_id: string;
